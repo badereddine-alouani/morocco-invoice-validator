@@ -1,7 +1,7 @@
 from langchain_ollama import ChatOllama
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.prompts import ChatPromptTemplate
-from schemas.invoices import InvoiceExtractedData
+from app.schemas.invoices import InvoiceExtractedData
 
 
 llm = ChatOllama(

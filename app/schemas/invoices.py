@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
+from enum import Enum
 
 # --- 1. Sub-Models (The Building Blocks) ---
 
@@ -39,9 +40,19 @@ class InvoiceExtractedData(BaseModel):
 
 # --- 3. The Output Model (What we send to the Frontend) ---
 
+class ErrorType(str, Enum):
+    # 🔴 BLOCKING (The Invoice is Invalid)
+    CRITICAL_COMPLIANCE = "CRITICAL_COMPLIANCE"  # Legal failures (Missing ICE)
+    MATH_MISMATCH = "MATH_MISMATCH"              # Calculation failures (HT + TVA != TTC)
+    MISSING_DATA = "MISSING_DATA"                # OCR failures (No Date, No Total)
+    
+    # 🟡 WARNINGS (The Invoice is Valid, but suspicious)
+    SUSPICIOUS_VALUE = "SUSPICIOUS_VALUE"        # Weird Tax Rate (e.g., 18%), Future Date
+    DATA_QUALITY = "DATA_QUALITY"                # Typos, low confidence reads
+
 class ValidationIssue(BaseModel):
     field: str
-    error_type: str  # e.g., "CRITICAL", "WARNING", "MATH_ERROR"
+    error_type: ErrorType
     message: str
 
 class ValidationResult(BaseModel):
