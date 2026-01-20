@@ -10,6 +10,6 @@ This project is currently under active development. The goal is to build a produ
 - [x] **Validation Logic:**
     - [x] Implement ICE verification (15-digit check).
     - [x] Implement mathematical audit (HT + TVA = TTC).
-- [ ] **API Development:** Build FastAPI endpoints (`POST /validate`).
+- [x] **API Development:** Build FastAPI endpoints (`POST /validate`).
 - [ ] **Containerization:** Write `Dockerfile` and `docker-compose.yml`.
 - [ ] **Demo UI:** Build a simple Streamlit dashboard for visual testing.

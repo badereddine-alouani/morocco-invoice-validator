@@ -153,7 +153,7 @@ def _validate_required_metadata(data: InvoiceExtractedData) -> List[ValidationIs
         ))
 
 
-    if not data.seller.tax_id:
+    if not data.seller.if_:
         issues.append(ValidationIssue(
             field="Seller Tax ID (IF)", 
             error_type=ErrorType.CRITICAL_COMPLIANCE, 

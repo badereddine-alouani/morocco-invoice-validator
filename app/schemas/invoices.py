@@ -12,7 +12,8 @@ class EntityInfo(BaseModel):
     name: Optional[str] = Field(None, description="Company name")
     address: Optional[str] = Field(None, description="Company address")
     ice: Optional[str] = Field(None, description="Identifiant Commun de l'Entreprise (15 digits)")
-    tax_id: Optional[str] = Field(None, description="Identifiant Fiscal (IF)")
+    if_: Optional[str] = Field(
+        None,description="Identifiant Fiscal (IF), explicitly labeled IF / I.F.")
     rc: Optional[str] = Field(None, description="Registre de Commerce (RC)")
 
 class InvoiceItem(BaseModel):
