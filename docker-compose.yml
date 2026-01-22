@@ -1,0 +1,23 @@
+services:
+  vllm:
+    image: vllm/vllm-openai:latest
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
+    ports:
+      - "8001:8000"
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN}
+    command: >
+      --model TheBloke/Mistral-7B-Instruct-v0.2-AWQ --quantization awq --dtype half --gpu-memory-utilization 0.80 --max-model-len 2048 --enforce-eager
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"

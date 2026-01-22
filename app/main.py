@@ -11,4 +11,4 @@ app.include_router(invoices.router)
 
 @app.get("/")
 def health_check():
-    return {"status": "System is running", "location": "Morocco"}
+    return {"status": "System is running"}

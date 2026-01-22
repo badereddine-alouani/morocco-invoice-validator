@@ -1,13 +1,16 @@
 import logging
 from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.prompts import ChatPromptTemplate
 from app.schemas.invoices import InvoiceExtractedData
 
 
-llm = ChatOllama(
-    model="mistral:7b",
-    temperature=0
+llm = ChatOpenAI(
+    model="TheBloke/Mistral-7B-Instruct-v0.2-AWQ",
+    openai_api_key="",
+    openai_api_base="http://localhost:8001/v1",
+    temperature=0,
 )
 
 logger = logging.getLogger(__name__)

@@ -12,4 +12,4 @@ This project is currently under active development. The goal is to build a produ
     - [x] Implement mathematical audit (HT + TVA = TTC).
 - [x] **API Development:** Build FastAPI endpoints (`POST /validate`).
 - [ ] **Containerization:** Write `Dockerfile` and `docker-compose.yml`.
-- [ ] **Demo UI:** Build a simple Streamlit dashboard for visual testing.
+- [x] **Demo UI:** Build a simple Streamlit dashboard for visual testing.
