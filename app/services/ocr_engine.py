@@ -1,21 +1,31 @@
+import os
 import logging
-from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.prompts import ChatPromptTemplate
 from app.schemas.invoices import InvoiceExtractedData
 
+VLLM_API_URL = os.getenv("VLLM_API_URL", "http://localhost:8001/v1")
+MODEL_NAME = "TheBloke/Mistral-7B-Instruct-v0.2-AWQ"
 
-llm = ChatOpenAI(
-    model="TheBloke/Mistral-7B-Instruct-v0.2-AWQ",
-    openai_api_key="",
-    openai_api_base="http://localhost:8001/v1",
-    temperature=0,
-)
+
+_cached_llm = None
+
+def _get_llm():
+
+    global _cached_llm
+    if _cached_llm is None:
+        logger.info(f"Initializing vLLM Client for Worker (Model: {MODEL_NAME})")
+        _cached_llm = ChatOpenAI(
+            model=MODEL_NAME,
+            openai_api_key="EMPTY",
+            openai_api_base=VLLM_API_URL,
+            temperature=0,
+        )
+    return _cached_llm
 
 logger = logging.getLogger(__name__)
 
-structured_llm = llm.with_structured_output(InvoiceExtractedData)
 
 PROMPT_TEMPLATE = """
 You are an expert AI accountant specializing in Moroccan Tax Law (DGI).
@@ -99,7 +109,6 @@ RAW INVOICE TEXT:
 """
 
 
-
 def extract_invoice_data(pdf_path: str) -> InvoiceExtractedData:
     loader = PyPDFLoader(pdf_path)
     docs = loader.load()
@@ -113,6 +122,10 @@ def extract_invoice_data(pdf_path: str) -> InvoiceExtractedData:
     logger.debug(f"RAW PDF CONTENT START\n{content}")
     logger.debug("RAW PDF CONTENT END")
     logger.debug("="*50)
+    
+    llm = _get_llm()
+
+    structured_llm = llm.with_structured_output(InvoiceExtractedData)
     
     prompt = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
 

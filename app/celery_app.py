@@ -1,9 +1,13 @@
+import os
 from celery import Celery
+
+BROKER = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
+BACKEND = os.getenv("CELERY_RESULT_BACKEND", "redis://localhost:6379/0")
 
 celery_app = Celery(
     "invoice_worker",
-    broker="redis://localhost:6379/0",
-    backend="redis://localhost:6379/0",
+    broker=BROKER,
+    backend=BACKEND,
     include=["app.worker"],
 )
 

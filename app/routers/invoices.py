@@ -5,6 +5,7 @@ from celery.result import AsyncResult
 from app.celery_app import celery_app
 import os
 import shutil
+import uuid
 
 
 router = APIRouter(prefix="/invoices", tags=["Invoices"])
@@ -17,8 +18,12 @@ def validate_invoice_endpoint(file: UploadFile):
     if not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
     
-    filename = Path(file.filename).name
-    save_to = UPLOAD_DIR / f"temp_{filename}"
+    path = Path(file.filename)
+    filename = path.name
+    extension = path.suffix
+    unique_filename = f"{uuid.uuid4()}{extension}"
+
+    save_to = UPLOAD_DIR / unique_filename
     
     try:
         with open(save_to, "wb") as buffer:

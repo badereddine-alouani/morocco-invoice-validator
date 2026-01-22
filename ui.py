@@ -1,10 +1,11 @@
+import os
 import streamlit as st
 import requests
 import time
 import pandas as pd
 
 
-API_URL = "http://localhost:8000"
+API_URL = os.getenv("API_URL", "http://localhost:8000")
 
 st.set_page_config(page_title="Morocco Invoice Validator", layout="wide")
 
@@ -61,6 +62,11 @@ if uploaded_file:
 
         if extracted_data:
             st.divider()
+            
+            if extracted_data.get("status") == "failed":
+                st.error(f"❌ Processing Error: {extracted_data.get('error')}")
+                st.warning("Tip: If this is 'Connection refused', vLLM might still be loading. Wait 30s and try again.")
+                st.stop()
 
             if extracted_data["is_valid"]:
                 st.success(f"✅ **VALID INVOICE** verified by AI")

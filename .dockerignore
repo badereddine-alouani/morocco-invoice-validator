@@ -1,0 +1,17 @@
+# Folders
+venv/
+.git/
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Files
+.env
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+
+# Data
+temp/*
+!temp/.gitkeep
