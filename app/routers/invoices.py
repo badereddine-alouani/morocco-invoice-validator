@@ -17,7 +17,7 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 
 @router.post("/validate")
-@limiter.limit("10/minute")
+@limiter.limit("60/minute")
 def validate_invoice_endpoint(request: Request, file: UploadFile):
 
     if not file.filename.lower().endswith(".pdf"):
@@ -56,10 +56,10 @@ def get_task_status(task_id: str):
     task_result = AsyncResult(task_id, app=celery_app)
 
     if task_result.state == 'SUCCESS':
-        return {"status": "Completed", "data": task_result.result}
+        return {"status": "completed", "data": task_result.result}
     elif task_result.state == 'FAILURE':
-        return {"status": "Failed", "error": str(task_result.result)}
+        return {"status": "failed", "error": str(task_result.result)}
     
     else:
-        return {"status": "Pending"}
+        return {"status": "pending"}
 
