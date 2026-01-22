@@ -1,19 +1,24 @@
-from fastapi import APIRouter, UploadFile, HTTPException
+from fastapi import APIRouter, UploadFile, HTTPException, Request
 from pathlib import Path
 from app.worker import process_invoice_task
 from celery.result import AsyncResult
 from app.celery_app import celery_app
+from app.core.security import limiter
 import os
 import shutil
 import uuid
 
 
 router = APIRouter(prefix="/invoices", tags=["Invoices"])
+
 UPLOAD_DIR = Path("temp")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
+
+
 @router.post("/validate")
-def validate_invoice_endpoint(file: UploadFile):
+@limiter.limit("10/minute")
+def validate_invoice_endpoint(request: Request, file: UploadFile):
 
     if not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
