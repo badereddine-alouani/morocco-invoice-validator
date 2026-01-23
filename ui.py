@@ -8,6 +8,18 @@ import pandas as pd
 API_URL = os.getenv("API_URL", "http://localhost:8000")
 st.set_page_config(page_title="Morocco Invoice Validator", layout="wide")
 
+st.markdown("""
+    <style>
+    span[data-testid="stMainMenu"] {
+        visibility: hidden;
+    }
+    
+    footer {
+        visibility: hidden;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # 2. SESSION STATE MANAGEMENT
 if "invoice_tasks" not in st.session_state:
     st.session_state.invoice_tasks = []  # Stores all task data persistently

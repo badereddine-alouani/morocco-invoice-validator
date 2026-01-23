@@ -1,30 +1,27 @@
-import os
 import logging
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.prompts import ChatPromptTemplate
 from app.schemas.invoices import InvoiceExtractedData
 
-VLLM_API_URL = os.getenv("VLLM_API_URL", "http://localhost:8001/v1")
-MODEL_NAME = "TheBloke/Mistral-7B-Instruct-v0.2-AWQ"
+
 
 
 _cached_llm = None
+logger = logging.getLogger(__name__)
 
-def _get_llm():
+def _get_llm(model: str):
 
     global _cached_llm
     if _cached_llm is None:
-        logger.info(f"Initializing vLLM Client for Worker (Model: {MODEL_NAME})")
-        _cached_llm = ChatOpenAI(
-            model=MODEL_NAME,
-            openai_api_key="EMPTY",
-            openai_api_base=VLLM_API_URL,
+        logger.info(f"Initializing vLLM Client for Worker (Model: {model})")
+        _cached_llm = ChatGoogleGenerativeAI(
+            model=model,
             temperature=0,
         )
     return _cached_llm
 
-logger = logging.getLogger(__name__)
+
 
 
 PROMPT_TEMPLATE = """
@@ -123,7 +120,7 @@ def extract_invoice_data(pdf_path: str) -> InvoiceExtractedData:
     logger.debug("RAW PDF CONTENT END")
     logger.debug("="*50)
     
-    llm = _get_llm()
+    llm = _get_llm("models/gemini-flash-latest")
 
     structured_llm = llm.with_structured_output(InvoiceExtractedData)
     
